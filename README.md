@@ -6,6 +6,16 @@ https://yl1017-yang.github.io/planywayTeam/
 ### 프로젝트 생성
 npx create-react-app planyway
 
+### 프론트 배포
+npm install gh-pages --save-dev
+
+--- package.json ----
+"homepage": "https://yl1017-yang.github.io/planywayTeam",\ "scripts": {
+(...)
+"predeploy": "npm run build",
+"deploy": "gh-pages -d build"
+},
+
 
 ## 백엔드 - Supabase 
 https://supabase.com/dashboard/project/tadibqvctzbrpkisgyhx
