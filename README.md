@@ -46,7 +46,7 @@ create table events (
   team text,
 
   created_at timestamp default now()
-  
+
 );
 
 
@@ -60,5 +60,5 @@ https://fullcalendar.io/docs/react
 
 ### `npm start`
 
-### `npm run build`
+### `npm run deplay`
 
