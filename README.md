@@ -12,7 +12,7 @@ npm install gh-pages --save-dev
 
 --- package.json ----
 
-"homepage": "https://yl1017-yang.github.io/planywayTeam",
+"homepage": "https://yl1017-yang.github.io/planywayTeam/",
 
 "predeploy": "npm run build",
 
