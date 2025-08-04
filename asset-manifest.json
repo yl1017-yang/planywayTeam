@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/planywayTeam/static/css/main.85c0eef9.css",
+    "main.js": "/planywayTeam/static/js/main.c160d53f.js",
+    "static/js/453.e3d070d1.chunk.js": "/planywayTeam/static/js/453.e3d070d1.chunk.js",
+    "index.html": "/planywayTeam/index.html",
+    "main.85c0eef9.css.map": "/planywayTeam/static/css/main.85c0eef9.css.map",
+    "main.c160d53f.js.map": "/planywayTeam/static/js/main.c160d53f.js.map",
+    "453.e3d070d1.chunk.js.map": "/planywayTeam/static/js/453.e3d070d1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.85c0eef9.css",
+    "static/js/main.c160d53f.js"
+  ]
+}
