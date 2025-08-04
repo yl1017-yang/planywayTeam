@@ -2,7 +2,7 @@
 
 /* reset */
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline;-ms-overflow-style:scrollbar;box-sizing:border-box;-webkit-box-sizing:border-box;}
-body{font-family:"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;font-size:100%;font-weight:500;color:#333;line-height:1.5;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:none;-ms-text-size-adjust:100%;text-size-adjust:none;}
+body{font-family:"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;font-size:100%;font-weight:500;color:#333;line-height:1.4;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:none;-ms-text-size-adjust:100%;text-size-adjust:none;}
 
 /* basic tags selector */
 img{max-width:100%;vertical-align:middle;}
@@ -13,11 +13,11 @@ table{width:100%;border-collapse:collapse;border-spacing:0;table-layout:fixed;}
 fieldset, legend{background-color:transparent;}
 caption, legend, .blind{position:absolute !important;height:1px !important;width:1px !important;overflow:hidden !important;clip:rect(1px 1px 1px 1px) !important;clip:rect(1px,1px,1px,1px) !important;}
 a{color:inherit;text-decoration:none;cursor:pointer;}
-button{border:none;box-shadow:none;background:transparent;cursor:pointer;outline:none;border-radius:0;font-size:inherit;font-family:inherit;color:inherit;}
+button{border:none;box-shadow:none;background:transparent;cursor:pointer;outline:none;border-radius:0;font:inherit;color:inherit;}
 button:focus{outline-style:auto;outline: 2px solid -webkit-focus-ring-color;}
 
 /* form select */
-input,textarea,select{box-sizing:border-box;outline-style:none;font-size:inherit;font-family:inherit;color:inherit;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px;}
+input,textarea,select{box-sizing:border-box;outline-style:none;font:inherit;color:inherit;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px;}
 input[type='text'], input[type='password']{resize:none;box-shadow:none !important;outline:none;}
 input:checked{-webkit-appearance:checkbox;}
 input[type='text']::-ms-clear, input[type='tel']::-ms-clear{display:none;}
@@ -25,6 +25,7 @@ input[disabled], select[disabled], input[readonly], textarea[disabled], button[d
 input, textarea{-webkit-tap-highlight-color:rgba(0, 0, 0, 0)}
 select{vertical-align:middle;outline:none;background:transparent;}
 select::-ms-expand{display:none;}
+select option{border:0;padding:0;}
 
 #calendar-container {
 
@@ -115,7 +116,7 @@ select::-ms-expand{display:none;}
 .fc .fc-toolbar.fc-header-toolbar {
   margin: 0;
   padding: 0 40px;
-  background-color: #999;
+  background-color: #089196;
   height: 60px;
   
   font-size: 12px;
@@ -205,18 +206,8 @@ select::-ms-expand{display:none;}
   margin-left: 0;
 }
 
-/* 팀원별 색상 스타일링 */
-.alice-event {
-  background-color: #e8f0fe !important;
-  border: 1px solid #4285f4 !important;
-}
-.bob-event {
-  background-color: #fce8e6 !important;
-  border: 1px solid #d93025 !important;
-}
-
 /* 모달 팝업 */
-.modal {
+.modal-overlay {
   position: absolute;
   left: 0;
   top: 0;
@@ -231,11 +222,7 @@ select::-ms-expand{display:none;}
   display: none;
 }
 
-.modal.show {
-  display: block;
-}
-
-.modal-content {
+.modal {
   background-color: #fefefe;
   padding: 30px;
   border: 1px solid #888;
@@ -245,55 +232,54 @@ select::-ms-expand{display:none;}
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
-.modal-content h2 {
+.modal h3 {
   display: flex;
   font-size: 1.7rem;
   font-weight: 700;
   margin-bottom: 1rem;
 }
-.modal-content h2 > span {
+.modal h3 > span {
   display: block;
   flex: 1;
   text-align: right;
   font-size: 1rem;
 }
-.modal-content input[type='checkbox'] {
+.modal input[type='checkbox'] {
   width: 1.4rem;
   height: 1.4rem;
 }
 
-.modal-content label {
+.modal label {
   display: flex;
   align-items: center;
   margin: 0;
 }
 
-.modal-content input {
+.modal input, .modal textarea {
   flex: 1;
 }
 
-.modal-content span {
+.modal span {
   display: block;
   width: 12%;
 }
 
-.modal-content button {
+.modal button {
   background-color: #089196;
   color: white;
   padding: 10px 20px;
-  margin: 20px 5px 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.modal-content button:hover {
+.modal button:hover {
   background-color: #076b6b;
 }
 
 .modal-buttons {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: flex-end;
   margin-top: 20px;
 }

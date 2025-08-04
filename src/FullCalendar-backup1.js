@@ -3,7 +3,6 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import koLocale from '@fullcalendar/core/locales/ko';
 import './FullCalendar.css';
 import { supabase } from './supabaseClient';
 
@@ -37,41 +36,25 @@ const CalendarFreeVersion = () => {
     if (error) console.error('🚨 events fetch error:', error);
     else setEvents(data.map(e => {
       const labelColor = LABELS.find(l => l.label === e.label)?.color || '';
-      
-      // 디버깅: 라벨과 색상 정보 출력
-      console.log(`Event: ${e.title}, Label: ${e.label}, Color: ${labelColor}`);
-      
-      // 시작일과 종료일이 동일한 경우 FullCalendar가 인식할 수 있도록 종료일을 하루 뒤로 조정
-      let endTime = e.end_time;
-      if (e.start_time.slice(0, 10) === e.end_time.slice(0, 10)) {
-        const endDate = new Date(e.end_time);
-        endDate.setDate(endDate.getDate() + 1);
-        endTime = endDate.toISOString();
-        console.log(`Single day event adjusted: ${e.title}, Original end: ${e.end_time}, New end: ${endTime}`);
-      }
-      
       return {
         id: e.id,
         title: e.title,
         start: e.start_time,
-        end: endTime,
+        end: e.end_time,
         backgroundColor: labelColor,
-        allDay: true, // 하루 이벤트의 배경색이 제대로 표시되도록 allDay 속성 추가
         extendedProps: { team: e.team, label: e.label }
       };
     }));
   };
 
   const handleDateSelect = (selectInfo) => {
-    const selectedDate = selectInfo.startStr.slice(0, 10);
-    
     setNewEvent({
       id: null,
       title: '',
       team: '',
       label: '',
-      start: selectedDate,
-      end: selectedDate
+      start: selectInfo.startStr.slice(0, 10),
+      end: selectInfo.endStr.slice(0, 10)
     });
     setIsEditing(false);
     setModalOpen(true);
@@ -126,7 +109,6 @@ const CalendarFreeVersion = () => {
     // 종료일을 하루 뒤로 조정 (FullCalendar는 종료일을 포함하지 않음)
     const formatEndDateTime = (dateStr) => {
       const date = new Date(dateStr + 'T00:00:00');
-      // 시작일과 종료일이 동일한 경우에도 하루 뒤로 설정하여 FullCalendar가 인식하도록 함
       date.setDate(date.getDate() + 1);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -194,26 +176,6 @@ const CalendarFreeVersion = () => {
     else fetchEvents();
   };
 
-  const handleEventResize = async (info) => {
-    const { event } = info;
-    
-    // 리사이즈된 이벤트의 날짜를 ISO 형식으로 변환 (로컬 시간 기준)
-    const formatDateTime = (date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}T00:00:00.000Z`;
-    };
-    
-    const { error } = await supabase.from('events').update({
-      start_time: formatDateTime(event.start),
-      end_time: formatDateTime(event.end)
-    }).eq('id', event.id);
-
-    if (error) console.error('🚨 event resize error:', error);
-    else fetchEvents();
-  };
-
   return (
     <div>
       <FullCalendar
@@ -221,12 +183,10 @@ const CalendarFreeVersion = () => {
         initialView="dayGridMonth"
         editable={true}
         selectable={true}
-        eventResizableFromStart={true}
         events={events}
         select={handleDateSelect}
         eventClick={handleEventClick}
         eventDrop={handleEventDrop}
-        eventResize={handleEventResize}
         height="100vh"
         weekends={true}
         headerToolbar={{
@@ -243,10 +203,6 @@ const CalendarFreeVersion = () => {
           today: "오늘",
           timeGridWeek: "주별시간"
         }}
-        dayHeaderFormat={{ weekday: 'short' }}
-        titleFormat={{ year: 'numeric', month: 'long' }}
-        dayCellContent={(arg) => arg.dayNumberText.replace('일', '')}
-        locale={koLocale}
         eventColor="rgba(0, 0, 0, 0.8)"
         eventTextColor="rgba(0, 0, 0, 0.8)"
         eventBackgroundColor="#e6f6e3"
@@ -263,8 +219,8 @@ const CalendarFreeVersion = () => {
             </label>
 
             <label>
-              <span>내용</span>
-              <textarea type="text" value={newEvent.team} onChange={(e) => setNewEvent({ ...newEvent, team: e.target.value })} />
+              <span>팀원</span>
+              <input type="text" value={newEvent.team} onChange={(e) => setNewEvent({ ...newEvent, team: e.target.value })} />
             </label>
 
             <label>
