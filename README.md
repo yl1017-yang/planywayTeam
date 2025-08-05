@@ -45,6 +45,10 @@ create table events (
 
   team text,
 
+  label text,
+
+  canceled boolean default false,
+
   created_at timestamp default now()
 
 );

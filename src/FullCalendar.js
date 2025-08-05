@@ -25,6 +25,7 @@ const LABELS = [
 const CalendarFreeVersion = () => {
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: null });
   const [newEvent, setNewEvent] = useState({ id: null, title: '', team: '', label: '', start: '', end: '' });
   const [isEditing, setIsEditing] = useState(false);
 
@@ -36,7 +37,7 @@ const CalendarFreeVersion = () => {
     const { data, error } = await supabase.from('events').select('*');
     if (error) console.error('🚨 events fetch error:', error);
     else setEvents(data.map(e => {
-      const labelColor = LABELS.find(l => l.label === e.label)?.color || '';
+      const labelColor = LABELS.find(l => l.label === e.label)?.color || '#eee';
       
       // 디버깅: 라벨과 색상 정보 출력
       console.log(`Event: ${e.title}, Label: ${e.label}, Color: ${labelColor}`);
@@ -57,7 +58,12 @@ const CalendarFreeVersion = () => {
         end: endTime,
         backgroundColor: labelColor,
         allDay: true, // 하루 이벤트의 배경색이 제대로 표시되도록 allDay 속성 추가
-        extendedProps: { team: e.team, label: e.label }
+        classNames: e.canceled ? ['canceled-event'] : [],
+        extendedProps: {
+          team: e.team,
+          label: e.label,
+          canceled: e.canceled
+        }
       };
     }));
   };
@@ -104,7 +110,8 @@ const CalendarFreeVersion = () => {
       team: extendedProps.team || '',
       label: extendedProps.label || '',
       start: formatDate(start),
-      end: formatEndDate(end)
+      end: formatEndDate(end),
+      canceled: extendedProps.canceled || false
     });
     setIsEditing(true);
     setModalOpen(true);
@@ -174,6 +181,24 @@ const CalendarFreeVersion = () => {
     }
   };
 
+  const cancelEvent = async () => {
+    const { id } = newEvent;
+    const { error } = await supabase.from('events').update({ canceled: true }).eq('id', id);
+    if (!error) {
+      fetchEvents();
+      setModalOpen(false);
+    }
+  };
+  
+  const restoreEvent = async () => {
+    const { id } = newEvent;
+    const { error } = await supabase.from('events').update({ canceled: false }).eq('id', id);
+    if (!error) {
+      fetchEvents();
+      setModalOpen(false);
+    }
+  };  
+
   const handleEventDrop = async (info) => {
     const { event } = info;
     
@@ -214,6 +239,47 @@ const CalendarFreeVersion = () => {
     else fetchEvents();
   };
 
+  const handleEventMouseEnter = (info) => {
+    const { clientX, clientY } = info.jsEvent;
+    const { title, start, end, extendedProps } = info.event;
+
+    const labelColor = LABELS.find(l => l.label === extendedProps.label)?.color || '#fff';
+
+    // 날짜 포맷
+    const formatDate = (dateObj) => {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+
+    const startStr = start ? formatDate(start) : '';
+    // FullCalendar는 end 날짜를 "다음날 00:00"으로 주는 경우가 있음
+    const adjustedEnd = new Date(end);
+    adjustedEnd.setDate(adjustedEnd.getDate() - 1);
+    const endStr = end ? formatDate(adjustedEnd) : '';
+
+    setTooltip({
+      visible: true,
+      x: clientX,
+      y: clientY,
+      content: (
+        <div className="tooltip-content">
+          <h3 className={`title ${extendedProps.canceled ? 'canceled' : ''}`}>{extendedProps.canceled ? '취소' : ''} {title}</h3>
+          <p className='desc'>{extendedProps.team}</p>
+          <p className='date'>{startStr} ~ {endStr}</p>
+          {extendedProps.label && (
+            <p className='label'><span style={{ backgroundColor: labelColor, padding: '0.2rem 0.6rem', borderRadius: '0.3rem' }}>{extendedProps.label || '없음'}</span></p>
+          )}
+        </div>
+      )
+    });
+  };
+  
+  const handleEventMouseLeave = () => {
+    setTooltip({ visible: false, x: 0, y: 0, content: null });
+  };
+
   return (
     <div>
       <FullCalendar
@@ -227,6 +293,8 @@ const CalendarFreeVersion = () => {
         eventClick={handleEventClick}
         eventDrop={handleEventDrop}
         eventResize={handleEventResize}
+        eventMouseEnter={handleEventMouseEnter}
+        eventMouseLeave={handleEventMouseLeave}
         height="100vh"
         weekends={true}
         headerToolbar={{
@@ -252,14 +320,22 @@ const CalendarFreeVersion = () => {
         eventBackgroundColor="#e6f6e3"
       />
 
+      {/* 일정팝업 */}
       {modalOpen && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>{isEditing ? '일정 수정' : '일정 추가'}</h3>
+            <h3>
+              {isEditing ? '일정 수정' : '일정 추가'}
+              {!newEvent.canceled ? (
+                <button onClick={cancelEvent}>일정취소</button>
+              ) : (
+                <button onClick={restoreEvent}>일정복원</button>
+              )}
+            </h3>
 
             <label>
               <span>제목</span>
-              <input type="text" value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} />
+              <textarea type="text" value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} />
             </label>
 
             <label>
@@ -278,12 +354,8 @@ const CalendarFreeVersion = () => {
             </label>
 
             <label>
-              <span>시작일</span>
-              <input type="date" value={newEvent.start} onChange={(e) => setNewEvent({ ...newEvent, start: e.target.value })} />
-            </label>
-
-            <label>
-              <span>종료일</span>
+              <span>날짜</span>
+              <input type="date" value={newEvent.start} onChange={(e) => setNewEvent({ ...newEvent, start: e.target.value })} /> ~
               <input type="date" value={newEvent.end} onChange={(e) => setNewEvent({ ...newEvent, end: e.target.value })} />
             </label>
 
@@ -293,6 +365,19 @@ const CalendarFreeVersion = () => {
               <button onClick={() => setModalOpen(false)}>취소</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* 일정 툴팁 */}
+      {tooltip.visible && (
+        <div 
+          className="tooltip"
+          style={{
+            top: `${tooltip.y + 10}px`,
+            left: `${tooltip.x + 10}px`,
+          }}
+        >
+          {tooltip.content}
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@
 
 /* reset */
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;vertical-align:baseline;-ms-overflow-style:scrollbar;box-sizing:border-box;-webkit-box-sizing:border-box;}
-body{font-family:"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;font-size:100%;font-weight:500;color:#333;line-height:1.4;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:none;-ms-text-size-adjust:100%;text-size-adjust:none;}
+body{font-family:"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;font-size:100%;font-weight:400;color:#333;line-height:1.4;word-wrap:break-word;word-break:break-all;-webkit-text-size-adjust:none;-ms-text-size-adjust:100%;text-size-adjust:none;}
 
 /* basic tags selector */
 img{max-width:100%;vertical-align:middle;}
@@ -101,6 +101,10 @@ select option{border:0;padding:0;}
   color: #007fb9;
 }
 
+.fc .fc-toolbar{
+  flex-wrap: wrap;
+}
+
 /* 타이틀 */
 .fc .fc-toolbar-title {
   font-weight: 700;
@@ -109,18 +113,16 @@ select option{border:0;padding:0;}
 
 /* title이 잘리는 현상 */
 .fc-event .fc-event-main{
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* 일정표 툴 바  */
 .fc .fc-toolbar.fc-header-toolbar {
   margin: 0;
-  padding: 0 40px;
+  padding: .6rem 1rem;
   background-color: #089196;
-  height: 60px;
-  
-  font-size: 12px;
-  line-height: 30px;
+  font-size: 1rem;
+  line-height: 1;
   color: white;
 }
 
@@ -152,51 +154,52 @@ select option{border:0;padding:0;}
 
 /* 날짜변경 화살표 아이콘 */
 .fc .fc-button-primary span {
-  font-weight: 500;
-  font-size: 28px;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 /* 요일의 높이 */
 .fc-theme-standard th {
-  height: 40px;
+  height: 2rem;
   background: #f5f5f5;
-  font-weight: 700;
-  line-height: 19px;
+  font-weight: 600;
+  line-height: 1;
   color: #7b7b7b;
   vertical-align: middle;
 }
 
-/* Tody Cell에 배경색 주기 */
+/* Today Cell에 배경색 주기 */
 .fc .fc-daygrid-day.fc-day-today {
   background-color: #f4f4f4;
 }
 
 /* 날짜 Cell 프레임 */
 .fc .fc-daygrid-day-frame {
-  padding: 4px;
+  padding: 0.3rem;
 }
 
 /* 월간,주간 view의 Cell이 시작하는 위치 */
 .fc .fc-daygrid-day-top {
   flex-direction: row;
-  height: 24px;
+  height: 1.5rem;
   margin-bottom: 0;
 }
 
 /* 날짜 숫자 z-index 초기화 */
 .fc .fc-daygrid-day-number {
   font-size: 0.9rem;
-  padding: 2px;
+  padding: 0.1rem;
+  color:#777;
 }
 
 /* 이벤트 막대 스타일 */
 .fc-event {
-  padding: 1px 10px;
+  padding: 0.05rem 0.4rem;
   margin-bottom: 0;
-  border-radius: 4px;
+  border-radius: 0.3rem;
   border: 0;
-  font-weight: 700;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start {
@@ -204,6 +207,17 @@ select option{border:0;padding:0;}
 }
 .fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
   margin-left: 0;
+}
+
+/* FullCalendar에서 취소된 일정 표시 */
+.canceled-event .fc-event-title,
+.canceled-event .fc-event-main {
+  text-decoration: line-through;
+  /* opacity: 0.5; */
+}
+.canceled {
+  /* text-decoration: line-through; */
+  color: #777;
 }
 
 /* 모달 팝업 */
@@ -224,18 +238,18 @@ select option{border:0;padding:0;}
 
 .modal {
   background-color: #fefefe;
-  padding: 30px;
+  padding: 2rem;
   border: 1px solid #888;
   width: 80%;
   max-width: 600px;
-  border-radius: 10px;
+  border-radius: 0.6rem;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .modal h3 {
   display: flex;
   font-size: 1.7rem;
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 1rem;
 }
 .modal h3 > span {
@@ -267,9 +281,9 @@ select option{border:0;padding:0;}
 .modal button {
   background-color: #089196;
   color: white;
-  padding: 10px 20px;
+  padding: 0.5rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.3rem;
   cursor: pointer;
 }
 
@@ -279,9 +293,9 @@ select option{border:0;padding:0;}
 
 .modal-buttons {
   display: flex;
-  gap: 8px;
+  gap: 0.4rem;
   justify-content: flex-end;
-  margin-top: 20px;
+  margin-top: 1.5rem;
 }
 
 .delete-button {
@@ -292,3 +306,23 @@ select option{border:0;padding:0;}
 .delete-button:hover {
   background-color: #cc0000;
 }
+
+/* 툴팁 */
+.tooltip{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 26rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 1.2rem;
+  border-radius: .4rem;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.tooltip-content .title{font-size: 1.2rem;font-weight: 800;margin-bottom: 1rem;padding-bottom:0.8rem;border-bottom:1px solid #ddd;}
+.tooltip-content .desc{font-size: 1rem;}
+.tooltip-content .date{font-size: 0.9rem;margin:1rem 0 0.5rem;color:#999;}
+.tooltip-content .label{font-size: 0.9rem;}
