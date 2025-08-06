@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/planywayTeam/static/css/main.0a6b557b.css",
-    "main.js": "/planywayTeam/static/js/main.f4544b00.js",
+    "main.css": "/planywayTeam/static/css/main.5f509254.css",
+    "main.js": "/planywayTeam/static/js/main.556e0abb.js",
     "static/js/453.e3d070d1.chunk.js": "/planywayTeam/static/js/453.e3d070d1.chunk.js",
     "index.html": "/planywayTeam/index.html",
-    "main.0a6b557b.css.map": "/planywayTeam/static/css/main.0a6b557b.css.map",
-    "main.f4544b00.js.map": "/planywayTeam/static/js/main.f4544b00.js.map",
+    "main.5f509254.css.map": "/planywayTeam/static/css/main.5f509254.css.map",
+    "main.556e0abb.js.map": "/planywayTeam/static/js/main.556e0abb.js.map",
     "453.e3d070d1.chunk.js.map": "/planywayTeam/static/js/453.e3d070d1.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0a6b557b.css",
-    "static/js/main.f4544b00.js"
+    "static/css/main.5f509254.css",
+    "static/js/main.556e0abb.js"
   ]
 }
