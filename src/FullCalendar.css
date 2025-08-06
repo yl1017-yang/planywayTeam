@@ -33,14 +33,14 @@ select option{border:0;padding:0;}
 
 /* 달력부분 */
 :root {
-  --fc-small-font-size: 0.85em;
+  /* --fc-small-font-size: 0.85em;
 
   --fc-page-bg-color: #fff;
   --fc-neutral-bg-color: hsla(0, 0%, 82%, 0.3);
   --fc-neutral-text-color: grey;
   --fc-border-color: #ddd;
 
-  --fc-button-text-color: #fff;
+  --fc-button-text-color: #fff; */
 
   /* --fc-button-bg-color: #f3af00;
   --fc-button-border-color: #f3af00;
@@ -51,7 +51,7 @@ select option{border:0;padding:0;}
   --fc-button-active-bg-color: #f8cf66;
   --fc-button-active-border-color: #f8cf66; */
 
-  --fc-event-bg-color: #3788d8;
+  /* --fc-event-bg-color: #3788d8;
   --fc-event-border-color: none;
   --fc-event-text-color: #fff;
   --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
@@ -73,7 +73,7 @@ select option{border:0;padding:0;}
 
   --fc-now-indicator-color: red;
 
-  --fc-daygrid-event-dot-width: 8px;
+  --fc-daygrid-event-dot-width: 8px; */
 }
 
 .fc {
@@ -86,10 +86,10 @@ select option{border:0;padding:0;}
   min-height: 100px; /* 최소 높이 설정 */
 }
 
-.fc-daygrid-event {
+/* .fc-daygrid-event {
   border: none;
   cursor: pointer;
-}
+} */
 
 /* 일요일 날짜: 빨간색 */
 .fc .fc-day-sun a {
@@ -134,18 +134,18 @@ select option{border:0;padding:0;}
 }
 
 /* 툴바 사용 불가 버튼 스타일 */
-.fc .fc-toolbar-chunk .fc-button:disabled {
+/* .fc .fc-toolbar-chunk .fc-button:disabled {
   color: #e8e8e8;
-}
+} */
 /* 툴바 사용 불가 버튼 hover 시 스타일 주지 않기 */
-.fc .fc-toolbar-chunk .fc-button:disabled:hover {
+/* .fc .fc-toolbar-chunk .fc-button:disabled:hover {
   background-color: transparent;
-}
+} */
 
 /* 툴바 버튼 포커스 시 그림자 제거 */
-.fc .fc-toolbar-chunk .fc-button:focus {
+/* .fc .fc-toolbar-chunk .fc-button:focus {
   box-shadow: none;
-}
+} */
 
 /* 툴바 버튼 hover 시 배경색 변경 */
 .fc .fc-toolbar-chunk .fc-button:hover {
@@ -153,17 +153,16 @@ select option{border:0;padding:0;}
 }
 
 /* 날짜변경 화살표 아이콘 */
-.fc .fc-button-primary span {
+/* .fc .fc-button-primary span {
   font-weight: 600;
   font-size: 1rem;
-}
+} */
 
 /* 요일의 높이 */
 .fc-theme-standard th {
   height: 2rem;
   background: #f5f5f5;
   font-weight: 600;
-  line-height: 1;
   color: #7b7b7b;
   vertical-align: middle;
 }
@@ -191,6 +190,7 @@ select option{border:0;padding:0;}
   padding: 0.1rem;
   color:#777;
 }
+
 
 /* 이벤트 막대 스타일 */
 .fc-event {
@@ -302,10 +302,17 @@ select option{border:0;padding:0;}
   width: 10%;
 }
 
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
 .modal button {
   background-color: #089196;
   color: #fff;
   padding: 0.5rem 1.5rem;
+  margin: 0 0.2rem;
   border: none;
   border-radius: 0.3rem;
   cursor: pointer;
@@ -313,13 +320,6 @@ select option{border:0;padding:0;}
 
 .modal button:hover {
   background-color: #076b6b;
-}
-
-.modal-buttons {
-  display: flex;
-  gap: 0.4rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
 }
 
 .modal button.delete-button {
@@ -330,7 +330,7 @@ select option{border:0;padding:0;}
   background-color: #ff4444;
 }
 
-/* 모달 select */
+/* 라벨선택 select */
 .dropdown-wrapper {
   position: relative;
   cursor: pointer;
@@ -359,6 +359,7 @@ select option{border:0;padding:0;}
   background: #fff;
   z-index: 10;
   box-shadow: 0 5px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
 }
 .dropdown-option {
   display: inline-block;
@@ -366,7 +367,6 @@ select option{border:0;padding:0;}
   padding: 0.3em 1em;
   margin: 0.2rem;
   cursor: pointer;
-  /* transition: background 0.2s; */
   font-size: 0.9rem;
 }
 

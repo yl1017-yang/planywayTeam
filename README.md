@@ -31,7 +31,7 @@ https://supabase.com/docs/guides/getting-started/quickstarts/reactjs
 
 https://ramincoding.tistory.com/entry/Supabase-Supabase-%EB%A1%9C-%EB%B0%B1%EC%97%94%EB%93%9C-%EC%97%86%EC%9D%B4-Database-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0%EA%B8%B0%EB%B3%B8-%EC%82%AC%EC%9A%A9%EB%B2%95
 
-- Supabase sql
+- Supabase sql - 이벤트데이타
 
 create table events (
 
@@ -52,6 +52,22 @@ create table events (
   created_at timestamp default now()
 
 );
+
+- Supabase sql - 라벨데이타
+
+create table labels (
+
+  id uuid primary key default uuid_generate_v4(),
+
+  label text not null,
+
+  color text not null,
+
+  created_at timestamp default now()
+  
+);
+
+
 
 
 ## ✅ fullcalendar

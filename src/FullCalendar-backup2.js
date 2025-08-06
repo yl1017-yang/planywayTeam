@@ -356,14 +356,26 @@ const CalendarFreeVersion = () => {
             </header>
 
             <label className='title-label'>
+              {/* <span>🚩</span> */}
               <textarea type="text" value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} placeholder='제목 입력' />
             </label>
 
             <label className='desc-label'>
+              {/* <span>내용</span> */}
               <textarea type="text" value={newEvent.team} onChange={(e) => setNewEvent({ ...newEvent, team: e.target.value })} placeholder='내용 입력' />
             </label>
 
+            {/* <label className='label-label'>
+              <span>라벨</span>
+              <select value={newEvent.label} onChange={(e) => setNewEvent({ ...newEvent, label: e.target.value })} style={{ backgroundColor: LABELS.find(l => l.label === newEvent.label)?.color || 'white' }}>
+                <option value="">선택 없음</option>
+                {LABELS.map(({ label, color }) => (
+                  <option key={label} value={label} style={{ backgroundColor: color }}>{label}</option>
+                ))}
+              </select>
+            </label> */}
             <label className="label-label">
+              {/* <span>라벨</span> */}
               <div className="dropdown-wrapper" onClick={() => setDropdownOpen(!dropdownOpen)}>
                 <div className="dropdown-selected" style= { { backgroundColor: LABELS.find((l) => l.label === newEvent.label)?.color || '#f4f4f4', } } >
                   {newEvent.label || '라벨 선택'}
@@ -385,6 +397,7 @@ const CalendarFreeVersion = () => {
             </label>
 
             <label>
+              {/* <span>날짜</span> */}
               <input type="date" value={newEvent.start} onChange={(e) => setNewEvent({ ...newEvent, start: e.target.value })} /> ~
               <input type="date" value={newEvent.end} onChange={(e) => setNewEvent({ ...newEvent, end: e.target.value })} />
             </label>
