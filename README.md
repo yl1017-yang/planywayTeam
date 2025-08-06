@@ -47,7 +47,7 @@ create table events (
 
   label text,
 
-  canceled boolean default false,
+  completed boolean default false,
 
   created_at timestamp default now()
 

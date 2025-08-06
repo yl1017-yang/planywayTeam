@@ -9,7 +9,7 @@ import { supabase } from './supabaseClient';
 
 const LABELS = [
   { label: '풀샵/임직원', color: '#d6f5d6' },
-  { label: '상세페이지', color: '#d6f5d6' },
+  { label: '상세페이지', color: '#CAECC1' },
   { label: '촬영', color: '#fdf3bf' },
   { label: '올가', color: '#f9e79f' },
   { label: 'UIUX 및 개선', color: '#f8d7da' },
@@ -28,6 +28,14 @@ const CalendarFreeVersion = () => {
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: null });
   const [newEvent, setNewEvent] = useState({ id: null, title: '', team: '', label: '', start: '', end: '' });
   const [isEditing, setIsEditing] = useState(false);
+
+  // select custom
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const handleLabelSelect = (label) => {
+    setNewEvent({ ...newEvent, label });
+    setDropdownOpen(false);
+  };
+
 
   useEffect(() => {
     fetchEvents();
@@ -58,11 +66,11 @@ const CalendarFreeVersion = () => {
         end: endTime,
         backgroundColor: labelColor,
         allDay: true, // 하루 이벤트의 배경색이 제대로 표시되도록 allDay 속성 추가
-        classNames: e.canceled ? ['canceled-event'] : [],
+        classNames: e.completed ? ['completed-event'] : [],
         extendedProps: {
           team: e.team,
           label: e.label,
-          canceled: e.canceled
+          completed: e.completed
         }
       };
     }));
@@ -111,7 +119,7 @@ const CalendarFreeVersion = () => {
       label: extendedProps.label || '',
       start: formatDate(start),
       end: formatEndDate(end),
-      canceled: extendedProps.canceled || false
+      completed: extendedProps.completed || false
     });
     setIsEditing(true);
     setModalOpen(true);
@@ -181,9 +189,9 @@ const CalendarFreeVersion = () => {
     }
   };
 
-  const cancelEvent = async () => {
+  const completEvent = async () => {
     const { id } = newEvent;
-    const { error } = await supabase.from('events').update({ canceled: true }).eq('id', id);
+    const { error } = await supabase.from('events').update({ completed: true }).eq('id', id);
     if (!error) {
       fetchEvents();
       setModalOpen(false);
@@ -192,7 +200,7 @@ const CalendarFreeVersion = () => {
   
   const restoreEvent = async () => {
     const { id } = newEvent;
-    const { error } = await supabase.from('events').update({ canceled: false }).eq('id', id);
+    const { error } = await supabase.from('events').update({ completed: false }).eq('id', id);
     if (!error) {
       fetchEvents();
       setModalOpen(false);
@@ -265,7 +273,7 @@ const CalendarFreeVersion = () => {
       y: clientY,
       content: (
         <div className="tooltip-content">
-          <h3 className={`title ${extendedProps.canceled ? 'canceled' : ''}`}>{extendedProps.canceled ? '취소' : ''} {title}</h3>
+          <h3 className={`title ${extendedProps.completed ? 'completed' : ''}`}>{extendedProps.completed ? '✔️' : ''} {title}</h3>
           <p className='desc'>{extendedProps.team}</p>
           <p className='date'>{startStr} ~ {endStr}</p>
           {extendedProps.label && (
@@ -324,26 +332,30 @@ const CalendarFreeVersion = () => {
       {modalOpen && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>
-              {isEditing ? '일정 수정' : '일정 추가'}
-              {!newEvent.canceled ? (
-                <button onClick={cancelEvent}>일정취소</button>
-              ) : (
-                <button onClick={restoreEvent}>일정복원</button>
-              )}
-            </h3>
+            <header>
+              <h3>
+              🐋 {isEditing ? '일정 수정' : '일정 추가'}
+              </h3>
+              <div className='completed'>
+                {!newEvent.completed ? (
+                  <div onClick={completEvent}>✔️ 완료</div>
+                ) : (
+                  <div onClick={restoreEvent}>✖️ 취소</div>
+                )}
+              </div>
+            </header>
 
-            <label>
-              <span>제목</span>
-              <textarea type="text" value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} />
+            <label className='title-label'>
+              {/* <span>🚩</span> */}
+              <textarea type="text" value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} placeholder='제목 입력' />
             </label>
 
-            <label>
-              <span>내용</span>
-              <textarea type="text" value={newEvent.team} onChange={(e) => setNewEvent({ ...newEvent, team: e.target.value })} />
+            <label className='desc-label'>
+              {/* <span>내용</span> */}
+              <textarea type="text" value={newEvent.team} onChange={(e) => setNewEvent({ ...newEvent, team: e.target.value })} placeholder='내용 입력' />
             </label>
 
-            <label>
+            {/* <label className='label-label'>
               <span>라벨</span>
               <select value={newEvent.label} onChange={(e) => setNewEvent({ ...newEvent, label: e.target.value })} style={{ backgroundColor: LABELS.find(l => l.label === newEvent.label)?.color || 'white' }}>
                 <option value="">선택 없음</option>
@@ -351,17 +363,38 @@ const CalendarFreeVersion = () => {
                   <option key={label} value={label} style={{ backgroundColor: color }}>{label}</option>
                 ))}
               </select>
+            </label> */}
+            <label className="label-label">
+              {/* <span>라벨</span> */}
+              <div className="dropdown-wrapper" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                <div className="dropdown-selected" style= { { backgroundColor: LABELS.find((l) => l.label === newEvent.label)?.color || '#f4f4f4', } } >
+                  {newEvent.label || '라벨 선택'}
+                </div>
+
+                {dropdownOpen && (
+                  <ul className="dropdown-options">
+                    <li onClick= { () => handleLabelSelect('')} className="dropdown-option" >
+                      라벨 선택
+                    </li>
+                    {LABELS.map(({ label, color }) => (
+                      <li key= { label} onClick= { () => handleLabelSelect(label)} className="dropdown-option" style= {  { backgroundColor: color } } >
+                        {label}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </label>
 
             <label>
-              <span>날짜</span>
+              {/* <span>날짜</span> */}
               <input type="date" value={newEvent.start} onChange={(e) => setNewEvent({ ...newEvent, start: e.target.value })} /> ~
               <input type="date" value={newEvent.end} onChange={(e) => setNewEvent({ ...newEvent, end: e.target.value })} />
             </label>
 
             <div className="modal-buttons">
+              {isEditing && <button onClick={deleteEvent} className='delete-button'>삭제</button>}
               <button onClick={saveEvent}>{isEditing ? '수정' : '저장'}</button>
-              {isEditing && <button onClick={deleteEvent}>삭제</button>}
               <button onClick={() => setModalOpen(false)}>취소</button>
             </div>
           </div>
