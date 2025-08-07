@@ -26,29 +26,35 @@ const CalendarFreeVersion = () => {
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: null });
-  const [newEvent, setNewEvent] = useState({ id: null, title: '', team: '', label: '', start: '', end: '' });
+  const [newEvent, setNewEvent] = useState({ id: null, title: '', team: '', label: '', start: '', end: '', completed: false });
   const [isEditing, setIsEditing] = useState(false);
 
-  // select custom
+  // 라벨추가
+  const [labels, setLabels] = useState([]);
+  const [labelEditOpen, setLabelEditOpen] = useState(false);
+  const [newLabel, setNewLabel] = useState({ id: null, label: '', color: '#f4f4f4' });
+
+  // 라벨 select custom
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const handleLabelSelect = (label) => {
     setNewEvent({ ...newEvent, label });
     setDropdownOpen(false);
   };
 
-
   useEffect(() => {
     fetchEvents();
+    fetchLabels();
   }, []);
 
   const fetchEvents = async () => {
     const { data, error } = await supabase.from('events').select('*');
     if (error) console.error('🚨 events fetch error:', error);
     else setEvents(data.map(e => {
-      const labelColor = LABELS.find(l => l.label === e.label)?.color || '#eee';
+      // const labelColor = LABELS.find(l => l.label === e.label)?.color || '#eee';
+      const labelColor = labels.find(l => l.label === e.label)?.color || '#eee';
       
       // 디버깅: 라벨과 색상 정보 출력
-      console.log(`Event: ${e.title}, Label: ${e.label}, Color: ${labelColor}`);
+      // console.log(`Event: ${e.title}, Label: ${e.label}, Color: ${labelColor}`);
       
       // 시작일과 종료일이 동일한 경우 FullCalendar가 인식할 수 있도록 종료일을 하루 뒤로 조정
       let endTime = e.end_time;
@@ -56,7 +62,6 @@ const CalendarFreeVersion = () => {
         const endDate = new Date(e.end_time);
         endDate.setDate(endDate.getDate() + 1);
         endTime = endDate.toISOString();
-        console.log(`Single day event adjusted: ${e.title}, Original end: ${e.end_time}, New end: ${endTime}`);
       }
       
       return {
@@ -76,7 +81,40 @@ const CalendarFreeVersion = () => {
     }));
   };
 
-  // 일정선택택
+  // 라벨 fetchLabels 
+  const fetchLabels = async () => {
+    const { data, error } = await supabase.from('labels').select('*').order('created_at', { ascending: true });
+    if (error) console.error('❌ Fetch Labels Error:', error);
+    else setLabels(data);
+  };
+
+  // 라벨 추가/수정/삭제
+  const saveLabel = async () => {
+    if (!newLabel.label) return alert('라벨명을 입력하세요');
+    const action = newLabel.id
+      ? await supabase.from('labels').update(newLabel).eq('id', newLabel.id)
+      : await supabase.from('labels').insert(newLabel);
+
+    if (action.error) console.error('❌ Save Label Error:', action.error);
+    else {
+      fetchLabels();
+      setNewLabel({ id: null, label: '', color: '#f4f4f4' });
+      setLabelEditOpen(false);
+    }
+  };
+
+  const editLabel = (l) => {
+    setNewLabel({ id: l.id, label: l.label, color: l.color });
+    setLabelEditOpen(true);
+  };
+
+  const deleteLabel = async (id) => {
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+    const { error } = await supabase.from('labels').delete().eq('id', id);
+    if (!error) fetchLabels();
+  };
+
+  // 일정선택
   const handleDateSelect = (selectInfo) => {
     const selectedDate = selectInfo.startStr.slice(0, 10);
     
@@ -92,7 +130,7 @@ const CalendarFreeVersion = () => {
     setModalOpen(true);
   };
 
-  // 일정 추가, 수정정
+  // 일정 추가, 수정
   const handleEventClick = (clickInfo) => {
     const { id, title, start, end, extendedProps } = clickInfo.event;
     
@@ -127,7 +165,7 @@ const CalendarFreeVersion = () => {
     setModalOpen(true);
   };
 
-  // 일정 저장장
+  // 일정 저장
   const saveEvent = async () => {
     const { id, title, team, label, start, end } = newEvent;
     if (!title) return alert('제목을 입력하세요');
@@ -157,7 +195,8 @@ const CalendarFreeVersion = () => {
       team,
       label,
       start_time: formatDateTime(start),
-      end_time: formatEndDateTime(end)
+      end_time: formatEndDateTime(end),
+      completed: newEvent.completed
     };
 
     if (isEditing) {
@@ -338,7 +377,7 @@ const CalendarFreeVersion = () => {
         eventBackgroundColor="#e6f6e3" // 이벤트 배경 색상 설정
       />
 
-      {/* 일정팝업 */}
+      {/* 📅 일정 등록/수정 모달 */}
       {modalOpen && (
         <div className="modal-overlay">
           <div className="modal">
@@ -365,7 +404,7 @@ const CalendarFreeVersion = () => {
 
             <label className="label-label">
               <div className="dropdown-wrapper" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                <div className="dropdown-selected" style= { { backgroundColor: LABELS.find((l) => l.label === newEvent.label)?.color || '#f4f4f4', } } >
+                <div className="dropdown-selected" style= { { backgroundColor: labels.find((l) => l.label === newEvent.label)?.color || '#f4f4f4', } } >
                   {newEvent.label || '라벨 선택'}
                 </div>
 
@@ -374,14 +413,14 @@ const CalendarFreeVersion = () => {
                     <li onClick= { () => handleLabelSelect('')} className="dropdown-option" >
                       라벨 선택
                     </li>
-                    {LABELS.map(({ label, color }) => (
-                      <li key= { label} onClick= { () => handleLabelSelect(label)} className="dropdown-option" style= {  { backgroundColor: color } } >
-                        {label}
+                    {labels.map(l => (
+                      <li key={l.id} style={{ backgroundColor: l.color }} className="dropdown-option" onClick={() => setNewEvent({ ...newEvent, label: l.label })}>
+                        {l.label}
                       </li>
                     ))}
                   </ul>
                 )}
-              </div>
+              </div>              
             </label>
 
             <label>
@@ -398,6 +437,21 @@ const CalendarFreeVersion = () => {
                 <button onClick={() => setModalOpen(false)}>취소</button>
               </div>
             </div>
+
+            {/* 🎨 라벨 관리 패널 */}
+            <div className="label-panel">
+              <button onClick={() => setLabelEditOpen(true)}>+ 라벨 추가</button>
+              <ul>
+                {labels.map(l => (
+                  <li key={l.id}>
+                    <p style={{ backgroundColor: l.color }}>{l.label}</p>
+                    <button onClick={() => editLabel(l)}>✏️</button>
+                    <button onClick={() => deleteLabel(l.id)}>❌</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
           </div>
         </div>
       )}
@@ -414,6 +468,20 @@ const CalendarFreeVersion = () => {
           {tooltip.content}
         </div>
       )}
+
+      {/* 📝 라벨 추가/수정 모달 */}
+      {labelEditOpen && (
+        <div className="modal">
+          <h3>라벨 {newLabel.id ? '수정' : '추가'}</h3>
+          <input value={newLabel.label} onChange={(e) => setNewLabel({ ...newLabel, label: e.target.value })} placeholder="라벨명" />
+          <input type="color" value={newLabel.color} onChange={(e) => setNewLabel({ ...newLabel, color: e.target.value })} />
+          <div className="modal-buttons">
+            <button onClick={saveLabel}>저장</button>
+            <button onClick={() => setLabelEditOpen(false)}>닫기</button>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 };

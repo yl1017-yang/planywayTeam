@@ -370,6 +370,20 @@ select option{border:0;padding:0;}
   font-size: 0.9rem;
 }
 
+/* 라벨관리 */
+.label-panel {
+  padding: 1rem;
+  background: #f4f4f4;
+}
+.label-panel li{
+  display: flex;
+}
+.label-panel ul button {
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+
 /* 툴팁 */
 .tooltip{
   position: fixed;

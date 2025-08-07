@@ -7,20 +7,20 @@ import koLocale from '@fullcalendar/core/locales/ko';
 import { supabase } from './supabaseClient';
 import './FullCalendar.css';
 
-const LABELS = [
-  { label: '풀샵/임직원', color: '#d6f5d6' },
-  { label: '상세페이지', color: '#CAECC1' },
-  { label: '촬영', color: '#fdf3bf' },
-  { label: '올가', color: '#f9e79f' },
-  { label: 'UIUX 및 개선', color: '#f8d7da' },
-  { label: '휴가/교육', color: '#e2a7a7' },
-  { label: '퍼블', color: '#e5ccff' },
-  { label: '외부몰 썸네일 및 상품등록', color: '#b3d1ff' },
-  { label: '외부몰 기획전 및 배너', color: '#c1e7f2' },
-  { label: '제휴', color: '#fcd6ea' },
-  { label: 'CFS', color: '#f2c2f0' },
-  { label: '회의/기타', color: '#d3d3d3' }
-];
+// const LABELS = [
+//   { label: '풀샵/임직원', color: '#d6f5d6' },
+//   { label: '상세페이지', color: '#CAECC1' },
+//   { label: '촬영', color: '#fdf3bf' },
+//   { label: '올가', color: '#f9e79f' },
+//   { label: 'UIUX 및 개선', color: '#f8d7da' },
+//   { label: '휴가/교육', color: '#e2a7a7' },
+//   { label: '퍼블', color: '#e5ccff' },
+//   { label: '외부몰 썸네일 및 상품등록', color: '#b3d1ff' },
+//   { label: '외부몰 기획전 및 배너', color: '#c1e7f2' },
+//   { label: '제휴', color: '#fcd6ea' },
+//   { label: 'CFS', color: '#f2c2f0' },
+//   { label: '회의/기타', color: '#d3d3d3' }
+// ];
 
 const CalendarFreeVersion = () => {
   const [events, setEvents] = useState([]);
@@ -29,13 +29,12 @@ const CalendarFreeVersion = () => {
   const [newEvent, setNewEvent] = useState({ id: null, title: '', team: '', label: '', start: '', end: '' });
   const [isEditing, setIsEditing] = useState(false);
 
-  // select custom
+  // 라벨 select custom
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const handleLabelSelect = (label) => {
     setNewEvent({ ...newEvent, label });
     setDropdownOpen(false);
   };
-
 
   useEffect(() => {
     fetchEvents();
@@ -76,7 +75,7 @@ const CalendarFreeVersion = () => {
     }));
   };
 
-  // 일정선택택
+  // 일정선택
   const handleDateSelect = (selectInfo) => {
     const selectedDate = selectInfo.startStr.slice(0, 10);
     
@@ -92,7 +91,7 @@ const CalendarFreeVersion = () => {
     setModalOpen(true);
   };
 
-  // 일정 추가, 수정정
+  // 일정 추가, 수정
   const handleEventClick = (clickInfo) => {
     const { id, title, start, end, extendedProps } = clickInfo.event;
     
@@ -127,7 +126,7 @@ const CalendarFreeVersion = () => {
     setModalOpen(true);
   };
 
-  // 일정 저장장
+  // 일정 저장
   const saveEvent = async () => {
     const { id, title, team, label, start, end } = newEvent;
     if (!title) return alert('제목을 입력하세요');
@@ -356,26 +355,14 @@ const CalendarFreeVersion = () => {
             </header>
 
             <label className='title-label'>
-              {/* <span>🚩</span> */}
               <textarea type="text" value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} placeholder='제목 입력' />
             </label>
 
             <label className='desc-label'>
-              {/* <span>내용</span> */}
               <textarea type="text" value={newEvent.team} onChange={(e) => setNewEvent({ ...newEvent, team: e.target.value })} placeholder='내용 입력' />
             </label>
 
-            {/* <label className='label-label'>
-              <span>라벨</span>
-              <select value={newEvent.label} onChange={(e) => setNewEvent({ ...newEvent, label: e.target.value })} style={{ backgroundColor: LABELS.find(l => l.label === newEvent.label)?.color || 'white' }}>
-                <option value="">선택 없음</option>
-                {LABELS.map(({ label, color }) => (
-                  <option key={label} value={label} style={{ backgroundColor: color }}>{label}</option>
-                ))}
-              </select>
-            </label> */}
             <label className="label-label">
-              {/* <span>라벨</span> */}
               <div className="dropdown-wrapper" onClick={() => setDropdownOpen(!dropdownOpen)}>
                 <div className="dropdown-selected" style= { { backgroundColor: LABELS.find((l) => l.label === newEvent.label)?.color || '#f4f4f4', } } >
                   {newEvent.label || '라벨 선택'}
@@ -397,7 +384,6 @@ const CalendarFreeVersion = () => {
             </label>
 
             <label>
-              {/* <span>날짜</span> */}
               <input type="date" value={newEvent.start} onChange={(e) => setNewEvent({ ...newEvent, start: e.target.value })} /> ~
               <input type="date" value={newEvent.end} onChange={(e) => setNewEvent({ ...newEvent, end: e.target.value })} />
             </label>
