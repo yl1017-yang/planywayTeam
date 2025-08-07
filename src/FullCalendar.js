@@ -7,20 +7,20 @@ import koLocale from '@fullcalendar/core/locales/ko';
 import { supabase } from './supabaseClient';
 import './FullCalendar.css';
 
-const LABELS = [
-  { label: '풀샵/임직원', color: '#d6f5d6' },
-  { label: '상세페이지', color: '#CAECC1' },
-  { label: '촬영', color: '#fdf3bf' },
-  { label: '올가', color: '#f9e79f' },
-  { label: 'UIUX 및 개선', color: '#f8d7da' },
-  { label: '휴가/교육', color: '#e2a7a7' },
-  { label: '퍼블', color: '#e5ccff' },
-  { label: '외부몰 썸네일 및 상품등록', color: '#b3d1ff' },
-  { label: '외부몰 기획전 및 배너', color: '#c1e7f2' },
-  { label: '제휴', color: '#fcd6ea' },
-  { label: 'CFS', color: '#f2c2f0' },
-  { label: '회의/기타', color: '#d3d3d3' }
-];
+// const LABELS = [
+//   { label: '풀샵/임직원', color: '#d6f5d6' },
+//   { label: '상세페이지', color: '#CAECC1' },
+//   { label: '촬영', color: '#fdf3bf' },
+//   { label: '올가', color: '#f9e79f' },
+//   { label: 'UIUX 및 개선', color: '#f8d7da' },
+//   { label: '휴가/교육', color: '#e2a7a7' },
+//   { label: '퍼블', color: '#e5ccff' },
+//   { label: '외부몰 썸네일 및 상품등록', color: '#b3d1ff' },
+//   { label: '외부몰 기획전 및 배너', color: '#c1e7f2' },
+//   { label: '제휴', color: '#fcd6ea' },
+//   { label: 'CFS', color: '#f2c2f0' },
+//   { label: '회의/기타', color: '#d3d3d3' }
+// ];
 
 const CalendarFreeVersion = () => {
   const [events, setEvents] = useState([]);
@@ -31,6 +31,7 @@ const CalendarFreeVersion = () => {
 
   // 라벨추가
   const [labels, setLabels] = useState([]);
+  const [labelOpen, setLabelOpen] = useState(false);
   const [labelEditOpen, setLabelEditOpen] = useState(false);
   const [newLabel, setNewLabel] = useState({ id: null, label: '', color: '#f4f4f4' });
 
@@ -41,16 +42,22 @@ const CalendarFreeVersion = () => {
     setDropdownOpen(false);
   };
 
+  // 1. 최초에 labels 불러오기
   useEffect(() => {
-    fetchEvents();
     fetchLabels();
   }, []);
+
+  // 2. labels가 변경되면 events 다시 불러오기
+  useEffect(() => {
+    if (labels.length > 0) {
+      fetchEvents();
+    }
+  }, [labels]);   
 
   const fetchEvents = async () => {
     const { data, error } = await supabase.from('events').select('*');
     if (error) console.error('🚨 events fetch error:', error);
     else setEvents(data.map(e => {
-      // const labelColor = LABELS.find(l => l.label === e.label)?.color || '#eee';
       const labelColor = labels.find(l => l.label === e.label)?.color || '#eee';
       
       // 디버깅: 라벨과 색상 정보 출력
@@ -91,11 +98,18 @@ const CalendarFreeVersion = () => {
   // 라벨 추가/수정/삭제
   const saveLabel = async () => {
     if (!newLabel.label) return alert('라벨명을 입력하세요');
+    
     const action = newLabel.id
-      ? await supabase.from('labels').update(newLabel).eq('id', newLabel.id)
-      : await supabase.from('labels').insert(newLabel);
+    ? await supabase.from('labels').update({
+        label: newLabel.label,
+        color: newLabel.color,
+      }).eq('id', newLabel.id)
+    : await supabase.from('labels').insert({
+        label: newLabel.label,
+        color: newLabel.color,
+      });  
 
-    if (action.error) console.error('❌ Save Label Error:', action.error);
+    if (action.error) console.error('❌ Save Label Error:', action.error.message);
     else {
       fetchLabels();
       setNewLabel({ id: null, label: '', color: '#f4f4f4' });
@@ -299,7 +313,7 @@ const CalendarFreeVersion = () => {
     const { clientX, clientY } = info.jsEvent;
     const { title, start, end, extendedProps } = info.event;
 
-    const labelColor = LABELS.find(l => l.label === extendedProps.label)?.color || '#fff';
+    const labelColor = labels.find(l => l.label === extendedProps.label)?.color || '#fff';
 
     // 날짜 포맷
     const formatDate = (dateObj) => {
@@ -392,6 +406,7 @@ const CalendarFreeVersion = () => {
                   <div onClick={restoreEvent}>✖️ 취소</div>
                 )}
               </div>
+              <div className='label-box'><button onClick={() => setLabelOpen(true)}>라벨관리</button></div>
             </header>
 
             <label className='title-label'>
@@ -404,7 +419,7 @@ const CalendarFreeVersion = () => {
 
             <label className="label-label">
               <div className="dropdown-wrapper" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                <div className="dropdown-selected" style= { { backgroundColor: labels.find((l) => l.label === newEvent.label)?.color || '#f4f4f4', } } >
+                <div className="dropdown-selected" style={{ backgroundColor: labels.find((l) => l.label === newEvent.label)?.color || '#f4f4f4' }}>
                   {newEvent.label || '라벨 선택'}
                 </div>
 
@@ -420,7 +435,7 @@ const CalendarFreeVersion = () => {
                     ))}
                   </ul>
                 )}
-              </div>              
+              </div>
             </label>
 
             <label>
@@ -438,19 +453,7 @@ const CalendarFreeVersion = () => {
               </div>
             </div>
 
-            {/* 🎨 라벨 관리 패널 */}
-            <div className="label-panel">
-              <button onClick={() => setLabelEditOpen(true)}>+ 라벨 추가</button>
-              <ul>
-                {labels.map(l => (
-                  <li key={l.id}>
-                    <p style={{ backgroundColor: l.color }}>{l.label}</p>
-                    <button onClick={() => editLabel(l)}>✏️</button>
-                    <button onClick={() => deleteLabel(l.id)}>❌</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            
 
           </div>
         </div>
@@ -469,15 +472,36 @@ const CalendarFreeVersion = () => {
         </div>
       )}
 
+      {/* 🎨 라벨 관리 패널 */}
+      {labelOpen && (
+        <div className="modal-labels-overlay">
+          <div className="label-panel">
+            <button onClick={() => setLabelEditOpen(true)}>+ 라벨 추가</button>
+            <button onClick={() => setLabelOpen(false)}>닫기</button>
+            <ul>
+              {labels.map(l => (
+                <li key={l.id}>
+                  <p style={{ backgroundColor: l.color }}>{l.label}</p>
+                  <button onClick={() => editLabel(l)}>✏️</button>
+                  <button onClick={() => deleteLabel(l.id)}>❌</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
       {/* 📝 라벨 추가/수정 모달 */}
       {labelEditOpen && (
-        <div className="modal">
-          <h3>라벨 {newLabel.id ? '수정' : '추가'}</h3>
-          <input value={newLabel.label} onChange={(e) => setNewLabel({ ...newLabel, label: e.target.value })} placeholder="라벨명" />
-          <input type="color" value={newLabel.color} onChange={(e) => setNewLabel({ ...newLabel, color: e.target.value })} />
-          <div className="modal-buttons">
-            <button onClick={saveLabel}>저장</button>
-            <button onClick={() => setLabelEditOpen(false)}>닫기</button>
+        <div className="modal-labels-overlay">
+          <div className="modal-labels">
+            <h3>라벨 {newLabel.id ? '수정' : '추가'}</h3>
+            <input value={newLabel.label} onChange={(e) => setNewLabel({ ...newLabel, label: e.target.value })} placeholder="라벨명" />
+            <input type="text" value={newLabel.color} onChange={(e) => setNewLabel({ ...newLabel, color: e.target.value })} placeholder="#HEX색상" maxLength={7}/>
+            <div className="modal-buttons">
+              <button onClick={saveLabel}>저장</button>
+              <button onClick={() => setLabelEditOpen(false)}>닫기</button>
+            </div>
           </div>
         </div>
       )}

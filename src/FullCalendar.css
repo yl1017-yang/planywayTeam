@@ -370,13 +370,72 @@ select option{border:0;padding:0;}
   font-size: 0.9rem;
 }
 
+/* 라벨 모달 팝업 */
+.modal-labels-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  display: none;
+}
+.modal-labels {
+  position: relative;
+  background-color: #fefefe;
+  padding: 2rem;
+  border: 1px solid #888;
+  width: 50%;
+  max-width: 400px;
+  border-radius: 0.6rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.modal-labels h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.modal-labels .modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+.modal-labels button {
+  background-color: #089196;
+  color: #fff;
+  padding: 0.5rem 1.5rem;
+  margin: 0 0.2rem;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+.modal-labels input {
+  width: 47%;
+  background: #f4f4f4;
+  margin-right: 0.5rem;
+}
+
 /* 라벨관리 */
 .label-panel {
+  position: relative;
   padding: 1rem;
   background: #f4f4f4;
+  border-radius: 0.4rem;
+  height: 30rem;
+  overflow-y: scroll;
 }
 .label-panel li{
   display: flex;
+}
+.label-panel li p{
+  padding: 0.2rem 0.6rem;
+  margin: 0.2rem 0;
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
 }
 .label-panel ul button {
   padding: 0;
