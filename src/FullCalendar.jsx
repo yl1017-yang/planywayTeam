@@ -396,7 +396,7 @@ const CalendarFreeVersion = () => {
 
                 {dropdownOpen && (
                   <ul className="dropdown-options">
-                    <li onClick={() => { setNewEvent({ ...newEvent, label_id: null }); setDropdownOpen(false); }} className="dropdown-option" >
+                    <li onClick={() => { setNewEvent(prev => ({ ...prev, label_id: null })); setDropdownOpen(false); }} className="dropdown-option" >
                       + 선택없음 +
                     </li>
                     {labels.map(l => (

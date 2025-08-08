@@ -45,7 +45,7 @@ create table events (
 
   team text,
 
-  label_id uuid references labels(id),
+  label_id uuid null references labels(id),
 
   completed boolean default false,
 
