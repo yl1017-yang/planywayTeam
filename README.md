@@ -31,7 +31,7 @@ https://supabase.com/docs/guides/getting-started/quickstarts/reactjs
 
 https://ramincoding.tistory.com/entry/Supabase-Supabase-%EB%A1%9C-%EB%B0%B1%EC%97%94%EB%93%9C-%EC%97%86%EC%9D%B4-Database-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0%EA%B8%B0%EB%B3%B8-%EC%82%AC%EC%9A%A9%EB%B2%95
 
-- Supabase sql - 이벤트데이타
+- Supabase sql - 이벤트테이블블
 
 create table events (
 
@@ -45,7 +45,7 @@ create table events (
 
   team text,
 
-  label text,
+  label_id uuid references labels(id),
 
   completed boolean default false,
 
@@ -53,7 +53,8 @@ create table events (
 
 );
 
-- Supabase sql - 라벨데이타
+
+- Supabase sql - 라벨테이블
 
 create table labels (
 

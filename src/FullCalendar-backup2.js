@@ -9,14 +9,14 @@ import './FullCalendar.css';
 
 // const LABELS = [
 //   { label: '풀샵/임직원', color: '#d6f5d6' },
-//   { label: '상세페이지', color: '#CAECC1' },
+//   { label: '상세페이지', color: '#aaf2b2' },
 //   { label: '촬영', color: '#fdf3bf' },
-//   { label: '올가', color: '#f9e79f' },
+//   { label: '올가', color: '#f9e698' },
 //   { label: 'UIUX 및 개선', color: '#f8d7da' },
 //   { label: '휴가/교육', color: '#e2a7a7' },
 //   { label: '퍼블', color: '#e5ccff' },
 //   { label: '외부몰 썸네일 및 상품등록', color: '#b3d1ff' },
-//   { label: '외부몰 기획전 및 배너', color: '#c1e7f2' },
+//   { label: '외부몰 기획전 및 배너', color: '#c1eff2' },
 //   { label: '제휴', color: '#fcd6ea' },
 //   { label: 'CFS', color: '#f2c2f0' },
 //   { label: '회의/기타', color: '#d3d3d3' }
