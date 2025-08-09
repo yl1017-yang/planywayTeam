@@ -396,6 +396,30 @@ const CalendarFreeVersion = () => {
     fetchHolidays(arg.start, arg.end);
   };
 
+  // 일정목록만 사용
+  const viewTypeSet = (arg) => {
+    setViewType(arg.view.type)
+  };
+
+  // ---------- list view에 라벨 추가 ----------
+  const [viewType, setViewType] = useState('dayGridMonth');
+
+  const renderListEventContent = (arg) => {
+    const { color, labelName } = arg.event.extendedProps || {};
+    return {
+      html: `
+        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          ${
+            color
+              ? `<span style="display:inline-block; border-radius:5rem; padding:0 0.5rem; background:${color};">${labelName}</span>`
+              : ''
+          }
+          <span>${arg.event.title}</span>
+        </div>
+      `
+    };
+  };
+
   return (
     <div className={`fc-title-mode ${showFullTitles ? 'wrap' : 'ellipsis'}`}>
       <FullCalendar
@@ -405,7 +429,8 @@ const CalendarFreeVersion = () => {
         selectable={true}
         eventResizableFromStart={true}
         events={[...events, ...holidayEvents]} // 일정 + 공휴일을 함께 렌더링
-        datesSet={handleDatesSet} // 뷰가 바뀔 때마다(월 이동, 주간 전환 등) 공휴일 새로 로드
+        datesSet={[handleDatesSet, viewTypeSet]} // 뷰가 바뀔 때마다(월 이동, 주간 전환 등) 공휴일 새로 로드 + 일정목록만 사용
+        eventContent={viewType.startsWith('list') ? renderListEventContent : undefined} // 리스트 뷰일 때만 eventContent 지정
         eventClassNames={(arg) => { // 제목 체크박스 적용
           return showFullTitles ? ['full-title'] : ['short-title'];
         }}
@@ -420,7 +445,6 @@ const CalendarFreeVersion = () => {
         headerToolbar={{
           left: `prevYear,prev,today,next,nextYear`,
           center: 'title',
-          // right: "dayGridMonth,dayGridWeek,timeGridWeek"
           right: "dayGridMonth,dayGridWeek,listWeek"
         }}
         views={{
