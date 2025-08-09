@@ -31,7 +31,8 @@ https://supabase.com/docs/guides/getting-started/quickstarts/reactjs
 
 https://ramincoding.tistory.com/entry/Supabase-Supabase-%EB%A1%9C-%EB%B0%B1%EC%97%94%EB%93%9C-%EC%97%86%EC%9D%B4-Database-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0%EA%B8%B0%EB%B3%B8-%EC%82%AC%EC%9A%A9%EB%B2%95
 
-- Supabase sql - 이벤트테이블블
+
+- Supabase sql - 이벤트테이블
 
 create table events (
 
@@ -71,15 +72,19 @@ create table labels (
 
 
 
-## ✅ fullcalendar
+## ✅ fullcalendar 플러그인
 https://fullcalendar.io/docs/react
 
 ### 설치 명령
 // npm install @fullcalendar/react @fullcalendar/timegrid @fullcalendar/daygrid @fullcalendar/interaction @fullcalendar/core @supabase/supabase-js
 
 
+## ✅ 구글 Calendar API
+Google Cloud Console 
+API Key 생성(Google Cloud → “Calendar API” 활성화 → API Key 발급)
+
+https://heejoo0503.tistory.com/56 //스크립형식 공휴일
+
 
 ### `npm start`
-
 ### `npm run deplay`
-
