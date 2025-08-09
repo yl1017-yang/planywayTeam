@@ -76,7 +76,13 @@ create table labels (
 https://fullcalendar.io/docs/react
 
 ### 설치 명령
-// npm install @fullcalendar/react @fullcalendar/timegrid @fullcalendar/daygrid @fullcalendar/interaction @fullcalendar/core @supabase/supabase-js
+npm install @fullcalendar/react 
+npm install @fullcalendar/timegrid 
+npm install @fullcalendar/daygrid 
+npm install @fullcalendar/interaction 
+npm install @fullcalendar/list
+npm install @supabase/supabase-js
+npm install react-select
 
 
 ## ✅ 구글 Calendar API

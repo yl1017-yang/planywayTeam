@@ -3,6 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
 import koLocale from '@fullcalendar/core/locales/ko';
 import { supabase } from './supabaseClient';
 import './FullCalendar.css';
@@ -13,7 +14,11 @@ const CalendarFreeVersion = () => {
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: null });
   const [newEvent, setNewEvent] = useState({ id: null, title: '', team: '', label_id: '', start: '', end: '', completed: false });
   const [isEditing, setIsEditing] = useState(false);
-  const [showFullTitles, setShowFullTitles] = useState(false);
+  // 상태 초기값을 localStorage에서 불러오기
+  const [showFullTitles, setShowFullTitles] = useState(() => {
+    const saved = localStorage.getItem('showFullTitles');
+    return saved === 'true'; // 저장된 값이 'true'면 true, 아니면 false
+  });
 
   // 구글 공휴일 API 
   const GOOGLE_API_KEY = 'AIzaSyCMgtiK1vFehQQo1ptqq0VaPIn7wzjchRI';
@@ -33,7 +38,12 @@ const CalendarFreeVersion = () => {
   }, []);
   useEffect(() => {
     if (labels.length > 0) fetchEvents();
-  }, [labels]); 
+  }, [labels]);
+
+  // 제목 체크값이 변경될 때 localStorage에 저장
+  useEffect(() => {
+    localStorage.setItem('showFullTitles', showFullTitles);
+  }, [showFullTitles]);
 
   // 라벨 fetchLabels 
   const fetchLabels = async () => {
@@ -389,13 +399,16 @@ const CalendarFreeVersion = () => {
   return (
     <div className={`fc-title-mode ${showFullTitles ? 'wrap' : 'ellipsis'}`}>
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         editable={true}
         selectable={true}
         eventResizableFromStart={true}
         events={[...events, ...holidayEvents]} // 일정 + 공휴일을 함께 렌더링
         datesSet={handleDatesSet} // 뷰가 바뀔 때마다(월 이동, 주간 전환 등) 공휴일 새로 로드
+        eventClassNames={(arg) => { // 제목 체크박스 적용
+          return showFullTitles ? ['full-title'] : ['short-title'];
+        }}
         select={handleDateSelect}
         eventClick={handleEventClick}
         eventDrop={handleEventDrop}
@@ -408,7 +421,7 @@ const CalendarFreeVersion = () => {
           left: `prevYear,prev,today,next,nextYear`,
           center: 'title',
           // right: "dayGridMonth,dayGridWeek,timeGridWeek"
-          right: "dayGridMonth,dayGridWeek"
+          right: "dayGridMonth,dayGridWeek,listWeek"
         }}
         views={{
           dayGridMonth: { 
