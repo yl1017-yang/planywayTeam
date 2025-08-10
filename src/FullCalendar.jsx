@@ -341,6 +341,23 @@ const CalendarFreeVersion = () => {
     if (!error) fetchLabels();
   }; 
 
+  // 모바일 탭 일정추가
+  const handleDateClick = (info) => {
+    // info.dateStr는 YYYY-MM-DD 또는 YYYY-MM-DDTHH:mm:ss 형식
+    const day = info.dateStr.slice(0, 10);
+    setNewEvent({
+      id: null,
+      title: '',
+      team: '',
+      label_id: null,   // 라벨 선택 안 해도 저장 가능하게 null 허용
+      start: day,
+      end: day,
+      completed: false
+    });
+    setIsEditing(false);
+    setModalOpen(true);
+  };  
+
   // ✅ 날짜 범위에 맞춰 공휴일 가져오기
   const fetchHolidays = useCallback(async (start, end) => {
     try {
@@ -430,12 +447,14 @@ const CalendarFreeVersion = () => {
         eventClassNames={(arg) => { // 제목 체크박스 적용
           return showFullTitles ? ['full-title'] : ['short-title'];
         }}
-        select={handleDateSelect}
-        eventClick={handleEventClick}
-        eventDrop={handleEventDrop}
-        eventResize={handleEventResize}
-        eventMouseEnter={handleEventMouseEnter}
-        eventMouseLeave={handleEventMouseLeave}
+        select={handleDateSelect}  // 일정선택
+        eventClick={handleEventClick} // 마우스 일정추가,수정
+        eventDrop={handleEventDrop} // 마우스 막대바 드래그
+        eventResize={handleEventResize} // 마우스 막대바 사이즈조정
+        eventMouseEnter={handleEventMouseEnter} // 툴팁 사용
+        eventMouseLeave={handleEventMouseLeave} // 툴팁 미사용
+        dateClick={handleDateClick}     // 모바일 탭 일정추가
+        selectLongPressDelay={0}        // 모바일 (선택) 터치에서 길게누름 없이 빠르게 반응
         height="100vh"
         weekends={true}
         headerToolbar={{
