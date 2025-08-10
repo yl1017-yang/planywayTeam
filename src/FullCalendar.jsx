@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -342,7 +342,7 @@ const CalendarFreeVersion = () => {
   }; 
 
   // ✅ 날짜 범위에 맞춰 공휴일 가져오기
-  const fetchHolidays = async (start, end) => {
+  const fetchHolidays = useCallback(async (start, end) => {
     try {
       const timeMin = new Date(start).toISOString();
       const timeMax = new Date(end).toISOString();
@@ -374,6 +374,7 @@ const CalendarFreeVersion = () => {
           editable: false,
           startEditable: false,
           durationEditable: false,
+          overlap: false,              // 다른 이벤트와 겹쳐도 클릭/드래그 방해 최소화
 
           backgroundColor: '#ffe8e8',
           textColor: '#b10000',
@@ -388,18 +389,13 @@ const CalendarFreeVersion = () => {
     } catch (e) {
       console.error('fetchHolidays error:', e);
     }
-  };
+  }, []);
 
-  // ✅ FullCalendar가 보여주는 날짜 범위가 바뀔 때마다 공휴일 갱신
-  const handleDatesSet = (arg) => {
-    // arg.start / arg.end 는 Date 객체
-    fetchHolidays(arg.start, arg.end);
-  };
-
-  // 일정목록만 사용
-  const viewTypeSet = (arg) => {
-    setViewType(arg.view.type)
-  };
+  // ✅ datesSet 하나로 합치기
+  const handleDatesSet = useCallback((arg) => {
+    setViewType(arg.view.type);               // 뷰 타입 저장
+    fetchHolidays(arg.start, arg.end);        // 공휴일 갱신
+  }, [fetchHolidays]);
 
   // ---------- list view에 라벨 추가 ----------
   const [viewType, setViewType] = useState('dayGridMonth');
@@ -429,7 +425,7 @@ const CalendarFreeVersion = () => {
         selectable={true}
         eventResizableFromStart={true}
         events={[...events, ...holidayEvents]} // 일정 + 공휴일을 함께 렌더링
-        datesSet={[handleDatesSet, viewTypeSet]} // 뷰가 바뀔 때마다(월 이동, 주간 전환 등) 공휴일 새로 로드 + 일정목록만 사용
+        datesSet={handleDatesSet} // 뷰가 바뀔 때마다(월 이동, 주간 전환 등) 공휴일 새로 로드 + 일정목록만 사용
         eventContent={viewType.startsWith('list') ? renderListEventContent : undefined} // 리스트 뷰일 때만 eventContent 지정
         eventClassNames={(arg) => { // 제목 체크박스 적용
           return showFullTitles ? ['full-title'] : ['short-title'];
