@@ -454,7 +454,7 @@ const CalendarFreeVersion = () => {
         eventMouseEnter={handleEventMouseEnter} // 툴팁 사용
         eventMouseLeave={handleEventMouseLeave} // 툴팁 미사용
         dateClick={handleDateClick}     // 모바일 탭 일정추가
-        selectLongPressDelay={0}        // 모바일 (선택) 터치에서 길게누름 없이 빠르게 반응
+        // selectLongPressDelay={0}        // 모바일 (선택) 터치에서 길게누름 없이 빠르게 반응
         height="100vh"
         weekends={true}
         headerToolbar={{
