@@ -17,15 +17,7 @@ npm install gh-pages --save-dev
 
 
 ## ✅ 백엔드 - Supabase 
-https://supabase.com/dashboard/project/tadibqvctzbrpkisgyhx
-
-https://rudaks.tistory.com/entry/supabase-%EB%B2%88%EC%97%AD-Supabase%EC%99%80-React-%ED%95%A8%EA%BB%98-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-Use-Supabase-with-React
-
-https://supabase.com/docs/guides/getting-started/quickstarts/reactjs
-
-- 사용법
-
-https://ramincoding.tistory.com/entry/Supabase-Supabase-%EB%A1%9C-%EB%B0%B1%EC%97%94%EB%93%9C-%EC%97%86%EC%9D%B4-Database-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0%EA%B8%B0%EB%B3%B8-%EC%82%AC%EC%9A%A9%EB%B2%95
+https://supabase.com/
 
 
 - Supabase sql - 이벤트테이블
